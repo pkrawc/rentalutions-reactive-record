@@ -7,22 +7,25 @@ import withRecords from './withRecords'
 import { all } from './actions'
 import reducer from './reducer'
 
-function reactiveRecord(obj) {
-  const _that = this
-  this.apiPrefix = obj.apiPrefix || ''
-  this.headers = obj.headers || {}
-  this.credentials = obj.credentials || 'same-origin'
-  this.model = function (modelConfig) {
-    this.singleton = modelConfig.singleton ? true : false
-    this.records = []
-    this.entities = {}
-    this.name = this.singleton ? pluralize.singular(modelConfig.name) : pluralize(modelConfig.name)
-    this.schema = modelConfig.schema
-    this.validations = modelConfig.validations ? modelConfig.validations : {}
-    this.getPrefix = _ => _that.apiPrefix
-    this.getHeaders = _ => _that.headers
-    this.getCredentials = _ => _that.credentials
+const reactiveRecord = spec => {
+  const that = {}
+  that.apiPrefix = spec.apiPrefix || ''
+  that.headers = spec.headers || {}
+  that.credentials = spec.credentials || 'same-origin'
+  that.model = modelSpec => {
+    const modelObject = {}
+    modelObject.singleton = modelSpec.singleton ? true : false
+    modelObject.records = []
+    modelObject.entities = {}
+    modelObject.name = modelSpec.singleton ? pluralize.singular(modelSpec.name) : pluralize(modelSpec.name)
+    modelObject.schema = modelSpec.schema
+    modelObject.validations = modelSpec.validations ? modelSpec.validations : {}
+    modelObject.getPrefix = _ => _that.apiPrefix
+    modelObject.getHeaders = _ => _that.headers
+    modelObject.getCredentials = _ => _that.credentials
+    return modelObject
   }
+  return that
 }
 
 export {
