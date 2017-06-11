@@ -12,7 +12,8 @@ const withRecords = models => BaseComponent => {
   }), {})
   const mapDispatchToProps = dispatch => models.reduce((prev, model) => ({
     [`${camelcase(pluralize.singular(model.name))}_actions`]: {
-      all, find, create, updateAttributes, destroy
+      // put all actions here to receive dispatch
+      all
     }
   }), {})
   return connect(

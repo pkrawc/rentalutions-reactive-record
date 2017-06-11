@@ -7,12 +7,12 @@ import withRecords from './withRecords'
 import { all } from './actions'
 import reducer from './reducer'
 
-const reactiveRecord = spec => {
-  const that = {}
-  that.apiPrefix = spec.apiPrefix || ''
-  that.headers = spec.headers || {}
-  that.credentials = spec.credentials || 'same-origin'
-  that.model = modelSpec => {
+const reactiveRecord = recordsSpec => {
+  const recordsObject = {}
+  recordsObject.apiPrefix = recordsSpec.apiPrefix || ''
+  recordsObject.headers = recordsSpec.headers || {}
+  recordsObject.credentials = recordsSpec.credentials || 'same-origin'
+  recordsObject.model = modelSpec => {
     const modelObject = {}
     modelObject.singleton = modelSpec.singleton ? true : false
     modelObject.records = []
@@ -20,12 +20,12 @@ const reactiveRecord = spec => {
     modelObject.name = modelSpec.singleton ? pluralize.singular(modelSpec.name) : pluralize(modelSpec.name)
     modelObject.schema = modelSpec.schema
     modelObject.validations = modelSpec.validations ? modelSpec.validations : {}
-    modelObject.getPrefix = _ => _that.apiPrefix
-    modelObject.getHeaders = _ => _that.headers
-    modelObject.getCredentials = _ => _that.credentials
-    return modelObject
+    modelObject.getPrefix = _ => recordsObject.apiPrefix
+    modelObject.getHeaders = _ => recordsObject.headers
+    modelObject.getCredentials = _ => recordsObject.credentials
+    return {...modelSpec, ...modelObject}
   }
-  return that
+  return {...recordsSpec,...recordsObject}
 }
 
 export {
