@@ -82,3 +82,7 @@ this.props.todo_actions.all() // GET all records from DB
 this.props.todo_actions.updateAttributes( id, {title: 'Pick up Milk'}) // update and save
 this.props.todo_actions.delete(id) // destroy the fucking todo
 ```
+
+
+## License
+MIT &copy; [Patrick Krawczykowski](https://dreadful.design)
