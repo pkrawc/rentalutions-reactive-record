@@ -8,7 +8,7 @@
     "build": "npm run clean && babel src -d lib",
     "dev": "babel -w src -d lib",
     "clean": "rm -rf lib/*",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "keywords": [],
   "author": "",

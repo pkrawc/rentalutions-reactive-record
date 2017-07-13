@@ -7,12 +7,11 @@ Many times setting up database bindings is the most tedious part of any react-re
 Reactive-record is a small utility for giving active-record like syntax bindings to react components. We use redux under the hood because who wants to write *another* state container.
 
 ## Documentation
-1. Introduction
 1. [Quick Start](#quick-start)
-1. API
+1. [API](#api)
 
 ## Quick Start
-A basic setup
+A basic setup. You'll want to declare your models somewhere and make sure they're available to the store and wherever you're calling `withRecords`. The model is created once and passed around. Do not declare the same model twice in an application.
 
 ```javascript
 import React, { Component } from 'react'
@@ -20,13 +19,20 @@ import { render } from 'react-dom'
 import { combineReducers, applyMiddleware, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import reactiveRecord, { withRecords } from '@rentalutions/reactive-record'
+import reactiveRecord, {
+  withRecords,
+  all,
+  find,
+  create,
+  updateAttributes,
+  destroy
+} from '@rentalutions/reactive-record'
 
-const records = new reactiveRecord({
+const records = reactiveRecord({
   // config
 })
 
-const Todo = new records.model({
+const Todo = records.model({
   name: 'Todo',
   schema: {
     id: String,
@@ -35,30 +41,46 @@ const Todo = new records.model({
   }
 })
 
+// if you're using redux then you'll want to turn your models into the appropriate
+// reducers. Each model comes with a handy reducer method that returns the correct
+// reducer. TODO: have reducer declare its own name so you don't have to guess at the state slice.
+
 const state = combineReducers({
-  //
   Todo: Todo.reducer
 })
 
 const store = createStore(state, applyMiddleware(thunk))
 
 const App = withRecords([Todo])(class extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { loaded: null }
+  }
   componentDidMount () {
-    this.props.todo_actions.all()
+    // GET ALL THE TODOS AND THEN SHOW THE DATA
+    all(Todo)
+      .then(res => this.setState({loaded: true}))
+      .catch(err => {
+        this.setState({loaded: false})
+        console.warn(err.message)
+      })
   }
   render () {
-    const {todos: {records, entities}, todo_actions} = this.props
-    return (
+    const {todos: {entities: TODOS} } = this.props
+    return this.state.loaded ? (
       <ul>
-        {records.map(id => (
+        {TODOS.map((todo, i) => (
           <li
-            className={entities[id].done ? 'checked' : ''}
+            className={todo.done ? 'checked' : ''}
             key={id}
-            onClick={ _ => todo_actions.updateAttributes(id, {done: !entities[id].done})}
-          >{entities[id].title}</li>
+            onClick={ () => updateAttributes(todo.id, {done: !todo.done})}
+          >
+          <p>{todo.title}</p>
+          <p>{todo.description}</p> // this will not show because it's not on the schema
+          </li>
         ))}
       </ul>
-    )
+    ) : null
   }
 })
 
@@ -71,18 +93,11 @@ const ReduxApp = props => (
 render(<ReduxApp />, document.getElementById('root'))
 ```
 
-Now you have a user model attached as props to the app component. This means you
-have direct access to the record and also get all the bindings you need to update
-an api of same-origin.
+## API
 
-```javascript
-this.props.todos // normalized record object
-this.props.todo_actions.find(id) // GET one record from DB
-this.props.todo_actions.all() // GET all records from DB
-this.props.todo_actions.updateAttributes( id, {title: 'Pick up Milk'}) // update and save
-this.props.todo_actions.delete(id) // destroy the fucking todo
-```
-
+### `withRecords`
+A higher order component that connects your component to the state slices of any models you're passing in. To be used with a redux implementation only.
+ 
 
 ## License
 MIT &copy; [Patrick Krawczykowski](https://dreadful.design)
