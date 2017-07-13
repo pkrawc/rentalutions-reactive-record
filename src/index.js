@@ -4,9 +4,8 @@ import url from 'url'
 import pluralize, { singular } from 'pluralize'
 
 import withRecords from './withRecords'
-import RecordKeeper from './RecordKeeper'
 import reducer from './reducer'
-import { create, all, find, updateAttributes, delete } from './actions'
+import { create, all, find, updateAttributes, destroy } from './actions'
 
 
 const reactiveRecord = recordsSpec => {
@@ -43,7 +42,6 @@ const reactiveRecord = recordsSpec => {
 
 export {
   reactiveRecord as default,
-  RecordKeeper,
   withRecords,
-  all,
+  create, all, find, updateAttributes, destroy
 }

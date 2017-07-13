@@ -1,18 +1,18 @@
 const reducer = (state, action, model) => {
   switch (action.type) {
-    case `CREATE_${model.actionName}`: {
+    case `CREATED_${model.actionName}`: {
       return state
     }
-    case `GET_ALL_${model.actionName}`: {
+    case `GOT_ALL_${model.actionName}`: {
       return state
     }
-    case `FIND_${model.actionName}`: {
+    case `FOUND_${model.actionName}`: {
       return state
     }
-    case `UPDATE_${model.actionName}_ATTRIBUTES`: {
+    case `UPDATED_${model.actionName}_ATTRIBUTES`: {
       return state
     }
-    case `DESTROY_${model.actionName}`: {
+    case `DESTROYED_${model.actionName}_RECORD`: {
       return state
     }
     default: {
