@@ -7,6 +7,8 @@ import withRecords from './withRecords'
 import reducer from './reducer'
 import { create, all, find, updateAttributes, destroy } from './actions'
 
+const redux = require('redux') || false
+
 
 const reactiveRecord = recordsSpec => {
   const recordsObject = {}
@@ -25,7 +27,7 @@ const reactiveRecord = recordsSpec => {
     modelObject.getPrefix = _ => recordsObject.apiPrefix
     modelObject.getHeaders = _ => recordsObject.headers
     modelObject.getCredentials = _ => recordsObject.credentials
-    if (recordsSpec.redux) {
+    if (redux) {
       modelObject.reducer = reducer(
         state = {
           entities: modelObject.entities,
