@@ -1,4 +1,4 @@
-const reducer = (model) => (state, action) => {
+const reducer = (state, action, model) => {
   switch (action.type) {
     case `CREATED_${model.actionName}_RECORD`: {
       return {
